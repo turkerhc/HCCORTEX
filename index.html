@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<!-- © 2026 Türker Hacıoğulları · HC CORTEX — Tüm hakları saklıdır. İzinsiz kopyalanamaz, çoğaltılamaz, dağıtılamaz. -->
+<meta name="author" content="Türker Hacıoğulları">
+<meta name="copyright" content="© 2026 Türker Hacıoğulları · HC CORTEX · Tüm hakları saklıdır">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="HC CORTEX — yüzlerce coini birden fazla bağımsız motorla okuyan yapay zekâ destekli kripto analiz ekranı.">
+<meta property="og:title" content="HC CORTEX Live">
+<meta property="og:description" content="Yatırım kapısı, piyasa duygusu, fırsat radarı ve takip listesi — tek ekranda.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2305070d'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%2338d8ff'/%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%239b7bff' stroke-width='1.5'/%3E%3C/svg%3E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CORTEX">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="ikon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="ikon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="ikon-512.png">
+<title>HC CORTEX Live</title>
+<style>
+html,body{margin:0;height:100%;background:#000;color:#e8eeff;font:15px system-ui,-apple-system,"Segoe UI",sans-serif}
+#k{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px}
+#f{width:min(340px,100%);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+#f[hidden],#y[hidden]{display:none}
+.kt{font:700 18px system-ui,sans-serif;letter-spacing:.16em}.kt b{color:#38d8ff}.kt span{color:#9b7bff}
+.ks{font-size:13px;color:#9aa7c7;margin-bottom:6px}
+input[type=text],input[type=password]{width:100%;box-sizing:border-box;font:500 16px ui-monospace,Menlo,monospace;letter-spacing:.1em;text-align:center;padding:13px 14px;border-radius:14px;border:1px solid rgba(120,150,220,.3);background:#0b0f19;color:#e8eeff;outline:none}
+input:focus{border-color:#38d8ff;box-shadow:0 0 0 3px rgba(56,216,255,.18)}
+label{font-size:12.5px;color:#9aa7c7;display:flex;gap:8px;align-items:center}
+button{width:100%;padding:13px;border-radius:14px;border:0;background:#38d8ff;color:#001018;font:700 13px ui-monospace,Menlo,monospace;letter-spacing:.24em}
+button:disabled{opacity:.6}#h{min-height:18px;font-size:12.5px;color:#ff4d7a}
+#y{font:600 11px ui-monospace,Menlo,monospace;letter-spacing:.3em;color:#5d6a8c}
+.c{position:fixed;bottom:max(14px,env(safe-area-inset-bottom));left:0;right:0;text-align:center;font-size:10.5px;color:#3c4660}
+.salla{animation:s .4s}@keyframes s{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+</style></head><body>
+<div id="k"><div id="y">YÜKLENİYOR…</div>
+<form id="f" hidden autocomplete="on"><div class="kt">HC<b>·</b>CORTEX</div><div class="ks">Kullanıcı adın ve şifrenle giriş yap</div>
+<input id="ad" type="text" name="username" placeholder="Kullanıcı adı" autocomplete="username" autocapitalize="words" spellcheck="false" required>
+<input id="sf" type="password" placeholder="Şifre" autocomplete="current-password" required>
+<label><input id="ha" type="checkbox" checked> Bu cihazda hatırla</label><button id="b" type="submit">AÇ</button><div id="h" role="alert"></div></form></div>
+<div class="c">© 2026 Türker Hacıoğulları · HC CORTEX</div>
+<script>
+(()=>{"use strict";
+const DOSYA='index.sayfa.json', AN='cx-anahtar', KK='cx-kullanici', KUL={turker:'Türker',serkan:'Serkan'};
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)), eb=s=>btoa(String.fromCharCode(...new Uint8Array(s)));
+const kN=s=>String(s||'').trim().toLocaleLowerCase('tr').replace(/ü/g,'u').replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ö/g,'o').replace(/ç/g,'c');
+const al=k=>{ try{ return sessionStorage.getItem(k)||localStorage.getItem(k); }catch(e){ return null; } };
+const koy=(k,v,kal)=>{ try{ sessionStorage.setItem(k,v); if(kal) localStorage.setItem(k,v); }catch(e){} };
+const sil=()=>{ try{ [AN,KK].forEach(k=>{ sessionStorage.removeItem(k); localStorage.removeItem(k); }); }catch(e){} };
+async function turet(sifre,P){ const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(sifre),'PBKDF2',false,['deriveBits']);
+  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:b64(P.s),iterations:P.i},km,512); return P.s+'|'+eb(bits); }
+async function coz(P,a){ const [tuz,kb]=a.split('|'); if(tuz!==P.s) throw new Error('tuz');
+  const k=b64(kb), n=b64(P.n), c=b64(P.c), t=b64(P.t), s=b64(P.s);
+  const mk=await crypto.subtle.importKey('raw',k.slice(32),{name:'HMAC',hash:'SHA-256'},false,['verify']);
+  const msg=new Uint8Array(s.length+n.length+c.length); msg.set(s); msg.set(n,s.length); msg.set(c,s.length+n.length);
+  if(!await crypto.subtle.verify('HMAC',mk,t,msg)) throw new Error('etiket');
+  const ek=await crypto.subtle.importKey('raw',k.slice(0,32),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+  const J=[]; for(let i=0;i<Math.ceil(c.length/32);i++){ const m=new Uint8Array(n.length+4); m.set(n); new DataView(m.buffer).setUint32(n.length,i); J.push(crypto.subtle.sign('HMAC',ek,m)); }
+  const A=(await Promise.all(J)).map(b=>new Uint8Array(b)); let o=new Uint8Array(c.length); for(let i=0;i<c.length;i++) o[i]=c[i]^A[i>>5][i&31];
+  if(P.z) o=new Uint8Array(await new Response(new Blob([o]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer());
+  return new TextDecoder().decode(o); }
+function yaz(html){ document.open(); document.write(html); document.close(); }
+const $=i=>document.getElementById(i);
+fetch(DOSYA+'?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(async P=>{
+  const a=al(AN), u=al(KK);
+  if(a&&u){ try{ yaz(await coz(P,a)); return; }catch(e){ sil(); } }
+  $('y').hidden=true; const f=$('f'); f.hidden=false; setTimeout(()=>$('ad').focus(),200);
+  f.onsubmit=async ev=>{ ev.preventDefault(); const b=$('b'), h=$('h'); h.textContent=''; const ad=KUL[kN($('ad').value)];
+    const hata=m=>{ h.textContent=m; f.classList.remove('salla'); void f.offsetWidth; f.classList.add('salla'); b.disabled=false; b.textContent='AÇ'; };
+    if(!ad) return hata('Kullanıcı bulunamadı');
+    b.disabled=true; b.textContent='…';
+    try{ const k=await turet($('sf').value,P); const html=await coz(P,k); const kal=$('ha').checked; koy(AN,k,kal); koy(KK,ad,kal); yaz(html); }
+    catch(e){ hata('Şifre yanlış'); } };
+}).catch(()=>{ $('y').textContent='Yüklenemedi · sayfayı yenile'; });
+})();
+</script></body></html>

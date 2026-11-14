@@ -1,0 +1,17 @@
+{
+  "name": "HC CORTEX Live",
+  "short_name": "CORTEX",
+  "description": "Yatırım kapısı, piyasa duygusu, fırsat radarı ve takip listesi — tek ekranda.",
+  "lang": "tr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#05070d",
+  "theme_color": "#05070d",
+  "icons": [
+    {"src": "ikon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "ikon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "ikon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
