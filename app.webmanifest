@@ -1,7 +1,7 @@
 {
   "name": "HC ORBIT",
   "short_name": "ORBIT",
-  "description": "Piyasanın nabzı cebinde: piyasa kapısı, sinyaller, analizler, haberler.",
+  "description": "Piyasanın nabzı cebinde: piyasa kapısı, işaretler, analizler, haberler.",
   "lang": "tr",
   "start_url": "./app.html",
   "scope": "./",
@@ -11,8 +11,8 @@
   "background_color": "#04060c",
   "theme_color": "#04060c",
   "icons": [
-    {"src": "app-192.png", "sizes": "192x192", "type": "image/png"},
-    {"src": "app-512.png", "sizes": "512x512", "type": "image/png"},
-    {"src": "app-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+    {"src": "app-192.png?v=2", "sizes": "192x192", "type": "image/png"},
+    {"src": "app-512.png?v=2", "sizes": "512x512", "type": "image/png"},
+    {"src": "app-maskable-512.png?v=2", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
   ]
 }
