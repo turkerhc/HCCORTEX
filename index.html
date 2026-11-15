@@ -20,16 +20,18 @@
 <title>HC CORTEX Live</title>
 <style>
 html,body{margin:0;height:100%;background:#000;color:#e8eeff;font:15px system-ui,-apple-system,"Segoe UI",sans-serif}
-#k{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px}
-#f{width:min(340px,100%);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
-#f[hidden],#y[hidden]{display:none}
-.kt{font:700 18px system-ui,sans-serif;letter-spacing:.16em}.kt b{color:#38d8ff}.kt span{color:#9b7bff}
-.ks{font-size:13px;color:#9aa7c7;margin-bottom:6px}
-input[type=text],input[type=password]{width:100%;box-sizing:border-box;font:500 16px ui-monospace,Menlo,monospace;letter-spacing:.1em;text-align:center;padding:13px 14px;border-radius:14px;border:1px solid rgba(120,150,220,.3);background:#0b0f19;color:#e8eeff;outline:none}
+#k{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
+form{width:min(340px,100%);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+form[hidden],#y[hidden]{display:none}
+.kt{font:700 18px system-ui,sans-serif;letter-spacing:.16em}.kt b{color:#38d8ff}
+.ks{font-size:13px;color:#9aa7c7;margin-bottom:6px;line-height:1.45}
+input[type=text],input[type=password]{width:100%;box-sizing:border-box;font:500 16px ui-monospace,Menlo,monospace;letter-spacing:.08em;text-align:center;padding:13px 14px;border-radius:14px;border:1px solid rgba(120,150,220,.3);background:#0b0f19;color:#e8eeff;outline:none}
 input:focus{border-color:#38d8ff;box-shadow:0 0 0 3px rgba(56,216,255,.18)}
 label{font-size:12.5px;color:#9aa7c7;display:flex;gap:8px;align-items:center}
 button{width:100%;padding:13px;border-radius:14px;border:0;background:#38d8ff;color:#001018;font:700 13px ui-monospace,Menlo,monospace;letter-spacing:.24em}
-button:disabled{opacity:.6}#h{min-height:18px;font-size:12.5px;color:#ff4d7a}
+button.lnk{background:none;color:#8fdcff;font:600 13px system-ui,sans-serif;letter-spacing:0;padding:6px}
+button:disabled{opacity:.6}.h{min-height:18px;font-size:12.5px;color:#ff4d7a;line-height:1.4}
+.ok{font-size:13px;color:#bff5de;border:1px solid rgba(44,242,166,.35);background:rgba(44,242,166,.07);border-radius:12px;padding:10px 12px;line-height:1.5}
 #y{font:600 11px ui-monospace,Menlo,monospace;letter-spacing:.3em;color:#5d6a8c}
 .c{position:fixed;bottom:max(14px,env(safe-area-inset-bottom));left:0;right:0;text-align:center;font-size:10.5px;color:#3c4660}
 .salla{animation:s .4s}@keyframes s{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
@@ -38,40 +40,83 @@ button:disabled{opacity:.6}#h{min-height:18px;font-size:12.5px;color:#ff4d7a}
 <form id="f" hidden autocomplete="on"><div class="kt">HC<b>·</b>CORTEX</div><div class="ks">Kullanıcı adın ve şifrenle giriş yap</div>
 <input id="ad" type="text" name="username" placeholder="Kullanıcı adı" autocomplete="username" autocapitalize="words" spellcheck="false" required>
 <input id="sf" type="password" placeholder="Şifre" autocomplete="current-password" required>
-<label><input id="ha" type="checkbox" checked> Bu cihazda hatırla</label><button id="b" type="submit">AÇ</button><div id="h" role="alert"></div></form></div>
+<label><input id="ha" type="checkbox" checked> Bu cihazda hatırla</label><button id="b" type="submit">AÇ</button><div id="h" class="h" role="alert"></div>
+<button type="button" class="lnk" id="dvA">✉️ Davet kodum var</button></form>
+<form id="d" hidden autocomplete="off"><div class="kt">HC<b>·</b>CORTEX</div><div class="ks">Davetle katıl · kullanıcı adını ve şifreni sen belirle.<br>Şifren yalnız bu cihazda işlenir, hiçbir yere gönderilmez.</div>
+<input id="dk" type="text" placeholder="Davet kodu" autocapitalize="characters" spellcheck="false" maxlength="24">
+<input id="dad" type="text" placeholder="Kullanıcı adın" autocomplete="username" spellcheck="false" maxlength="24">
+<input id="ds1" type="password" placeholder="Şifre (en az 8)" autocomplete="new-password">
+<input id="ds2" type="password" placeholder="Şifre tekrar" autocomplete="new-password">
+<button id="db" type="submit">HESABIMI OLUŞTUR</button><div id="dh" class="h" role="alert"></div><div id="do" class="ok" hidden></div>
+<button type="button" class="lnk" id="dvG">← Girişe dön</button></form></div>
 <div class="c">© 2026 Türker Hacıoğulları · HC CORTEX</div>
 <script>
 (()=>{"use strict";
-const DOSYA='index.sayfa.json', AN='cx-anahtar', KK='cx-kullanici', KUL={turker:'Türker',serkan:'Serkan'};
-const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)), eb=s=>btoa(String.fromCharCode(...new Uint8Array(s)));
+const DOSYA='index.sayfa.json', SUN='https://hc-orbit.turkerhc.workers.dev', AN='cx-anahtar', KK='cx-kullanici', ESKI={turker:'Türker',serkan:'Serkan'};
+const te=new TextEncoder(), b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)), eb=s=>{ let r=''; const u=new Uint8Array(s); for(let i=0;i<u.length;i+=8192) r+=String.fromCharCode(...u.subarray(i,i+8192)); return btoa(r); };
+const hx=u=>[...new Uint8Array(u)].map(x=>x.toString(16).padStart(2,'0')).join('');
 const kN=s=>String(s||'').trim().toLocaleLowerCase('tr').replace(/ü/g,'u').replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ö/g,'o').replace(/ç/g,'c');
 const al=k=>{ try{ return sessionStorage.getItem(k)||localStorage.getItem(k); }catch(e){ return null; } };
 const koy=(k,v,kal)=>{ try{ sessionStorage.setItem(k,v); if(kal) localStorage.setItem(k,v); }catch(e){} };
 const sil=()=>{ try{ [AN,KK].forEach(k=>{ sessionStorage.removeItem(k); localStorage.removeItem(k); }); }catch(e){} };
-async function turet(sifre,P){ const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(sifre),'PBKDF2',false,['deriveBits']);
-  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:b64(P.s),iterations:P.i},km,512); return P.s+'|'+eb(bits); }
+const $=i=>document.getElementById(i);
+async function pb(sifre,tuz,it,bit){ const km=await crypto.subtle.importKey('raw',te.encode(sifre),'PBKDF2',false,['deriveBits']); return new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:tuz,iterations:it},km,bit)); }
+async function hm(key,msg){ const k=await crypto.subtle.importKey('raw',key,{name:'HMAC',hash:'SHA-256'},false,['sign']); return new Uint8Array(await crypto.subtle.sign('HMAC',k,msg)); }
+async function akis(ka,n,len){ const J=[]; for(let i=0;i<Math.ceil(len/32);i++){ const m=new Uint8Array(n.length+4); m.set(n); new DataView(m.buffer).setUint32(n.length,i); J.push(hm(ka,m)); } return (await Promise.all(J)); }
+async function cozHam(P,a){ const n=b64(P.n), c=b64(P.c); const t=await hm(a.slice(32,64),(()=>{ const m=new Uint8Array(n.length+c.length); m.set(n); m.set(c,n.length); return m; })());
+  if(eb(t)!==P.t) throw new Error('etiket'); const A=await akis(a.slice(0,32),n,c.length); const o=new Uint8Array(c.length); for(let i=0;i<c.length;i++) o[i]=c[i]^A[i>>5][i&31]; return o; }
+async function sar(veri,a){ const n=crypto.getRandomValues(new Uint8Array(16)), A=await akis(a.slice(0,32),n,veri.length), c=new Uint8Array(veri.length);
+  for(let i=0;i<veri.length;i++) c[i]=veri[i]^A[i>>5][i&31]; const nc=new Uint8Array(16+c.length); nc.set(n); nc.set(c,16); return {n:eb(n),c:eb(c),t:eb(await hm(a.slice(32,64),nc))}; }
 async function coz(P,a){ const [tuz,kb]=a.split('|'); if(tuz!==P.s) throw new Error('tuz');
-  const k=b64(kb), n=b64(P.n), c=b64(P.c), t=b64(P.t), s=b64(P.s);
-  const mk=await crypto.subtle.importKey('raw',k.slice(32),{name:'HMAC',hash:'SHA-256'},false,['verify']);
-  const msg=new Uint8Array(s.length+n.length+c.length); msg.set(s); msg.set(n,s.length); msg.set(c,s.length+n.length);
-  if(!await crypto.subtle.verify('HMAC',mk,t,msg)) throw new Error('etiket');
-  const ek=await crypto.subtle.importKey('raw',k.slice(0,32),{name:'HMAC',hash:'SHA-256'},false,['sign']);
-  const J=[]; for(let i=0;i<Math.ceil(c.length/32);i++){ const m=new Uint8Array(n.length+4); m.set(n); new DataView(m.buffer).setUint32(n.length,i); J.push(crypto.subtle.sign('HMAC',ek,m)); }
-  const A=(await Promise.all(J)).map(b=>new Uint8Array(b)); let o=new Uint8Array(c.length); for(let i=0;i<c.length;i++) o[i]=c[i]^A[i>>5][i&31];
+  const k=b64(kb), n=b64(P.n), c=b64(P.c), s=b64(P.s), msg=new Uint8Array(s.length+n.length+c.length); msg.set(s); msg.set(n,s.length); msg.set(c,s.length+n.length);
+  if(eb(await hm(k.slice(32),msg))!==P.t) throw new Error('etiket');
+  const A=await akis(k.slice(0,32),n,c.length); let o=new Uint8Array(c.length); for(let i=0;i<c.length;i++) o[i]=c[i]^A[i>>5][i&31];
   if(P.z) o=new Uint8Array(await new Response(new Blob([o]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer());
   return new TextDecoder().decode(o); }
+const kimlik=async ad=>hx(await crypto.subtle.digest('SHA-256',te.encode('hccortex|'+kN(ad)))).slice(0,24);
+async function kilitAl(){ try{ const j=await (await fetch(SUN+'/cx/kilit',{cache:'no-store'})).json(); if(j&&j.k&&j.k.k) return j.k.k; }catch(_){}
+  try{ const j=await (await fetch('cx_kilit.json?t='+Date.now(),{cache:'no-store'})).json(); if(j&&j.k) return j.k; }catch(_){} return null; }
 function yaz(html){ document.open(); document.write(html); document.close(); }
-const $=i=>document.getElementById(i);
-fetch(DOSYA+'?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(async P=>{
+let P=null, KL=null;
+async function girisYap(ad,sifre,kal){ const u=await kimlik(ad), e=KL&&KL[u];
+  let anah;
+  if(e){ const a=await pb(sifre,b64(e.s),e.i,512), t=new TextDecoder().decode(await cozHam(e.w,a)); if(t[0]==='{'){ const o=JSON.parse(t); anah=o.k; ad=o.ad||ad; } else { anah=t; ad=e.ad||ad; } }
+  else if(!KL&&ESKI[kN(ad)]){ anah=P.s+'|'+eb(await pb(sifre,b64(P.s),P.i,512)); ad=ESKI[kN(ad)]; }
+  else throw new Error('yok');
+  const html=await coz(P,anah); koy(AN,anah,kal); koy(KK,ad,kal); yaz(html); }
+const sallaF=(f,h,m)=>{ h.textContent=m; f.classList.remove('salla'); void f.offsetWidth; f.classList.add('salla'); };
+Promise.all([fetch(DOSYA+'?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()),kilitAl()]).then(async([p,kl])=>{ P=p; KL=kl;
   const a=al(AN), u=al(KK);
-  if(a&&u){ try{ yaz(await coz(P,a)); return; }catch(e){ sil(); } }
+  if(a&&u&&!/davet=/.test(location.hash)){ try{ yaz(await coz(P,a)); return; }catch(e){ sil(); } }
   $('y').hidden=true; const f=$('f'); f.hidden=false; setTimeout(()=>$('ad').focus(),200);
-  f.onsubmit=async ev=>{ ev.preventDefault(); const b=$('b'), h=$('h'); h.textContent=''; const ad=KUL[kN($('ad').value)];
-    const hata=m=>{ h.textContent=m; f.classList.remove('salla'); void f.offsetWidth; f.classList.add('salla'); b.disabled=false; b.textContent='AÇ'; };
-    if(!ad) return hata('Kullanıcı bulunamadı');
+  f.onsubmit=async ev=>{ ev.preventDefault(); const b=$('b'), h=$('h'); h.textContent=''; b.disabled=true; b.textContent='…';
+    try{ await girisYap($('ad').value,$('sf').value,$('ha').checked); }
+    catch(e){ sallaF(f,h,e.message==='yok'?'Kullanıcı bulunamadı':'Şifre yanlış'); b.disabled=false; b.textContent='AÇ'; } };
+  const dv=$('d'), AL='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const davetAc=kod=>{ f.hidden=true; dv.hidden=false; if(kod){ const k=kod.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,16); $('dk').value=(k.match(/.{1,4}/g)||[]).join('-'); } setTimeout(()=>($('dk').value?$('dad'):$('dk')).focus(),150); };
+  $('dvA').onclick=()=>davetAc(''); $('dvG').onclick=()=>{ dv.hidden=true; f.hidden=false; try{ history.replaceState(null,'',location.pathname); }catch(_){} };
+  $('dk').addEventListener('input',e=>{ const k=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,16); e.target.value=(k.match(/.{1,4}/g)||[]).join('-'); });
+  { const m=location.hash.match(/davet=([A-Za-z0-9-]+)/); if(m) davetAc(m[1]); }
+  dv.onsubmit=async ev=>{ ev.preventDefault(); const h=$('dh'), b=$('db'); h.textContent='';
+    const kod=$('dk').value.toUpperCase().replace(/[^A-Z0-9]/g,''), ad=$('dad').value.trim().replace(/\s+/g,' '), s1=$('ds1').value, s2=$('ds2').value;
+    if(!/^[A-HJ-NP-Z2-9]{16}$/.test(kod)) return sallaF(dv,h,'Davet kodu 16 karakter olmalı.');
+    if(!/^[\p{L}\p{N}][\p{L}\p{N} ._-]{1,22}[\p{L}\p{N}]$/u.test(ad)||kN(ad).length<3) return sallaF(dv,h,'Kullanıcı adı 3–24 karakter olmalı.');
+    if(s1.length<8) return sallaF(dv,h,'Şifre en az 8 karakter olmalı.');
+    if(s1!==s2) return sallaF(dv,h,'Şifreler aynı değil.');
     b.disabled=true; b.textContent='…';
-    try{ const k=await turet($('sf').value,P); const html=await coz(P,k); const kal=$('ha').checked; koy(AN,k,kal); koy(KK,ad,kal); yaz(html); }
-    catch(e){ hata('Şifre yanlış'); } };
+    try{ const u=await kimlik(ad), tz=crypto.getRandomValues(new Uint8Array(16));
+      const [a,Kd]=await Promise.all([pb(s1,tz,600000,512),pb(kod,te.encode('hccortex-davet|'+kod.slice(0,4)),300000,768)]);
+      const c=await sar(a,Kd.slice(0,64));
+      const r=await fetch(SUN+'/cx/katil',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:kod.slice(0,4),p:hx(Kd.slice(64)),u,ad,s:eb(tz),c})});
+      const j=await r.json().catch(()=>({})); if(!r.ok||!j.q) throw new Error(r.status===429?'Çok fazla deneme — biraz sonra tekrar dene.':'Gönderilemedi, tekrar dene.');
+      const o=$('do'); o.hidden=false; o.textContent='✓ Gönderildi — hesabın hazırlanıyor (genelde 1–2 dakika). Bu sayfayı kapatma.'; b.hidden=true;
+      try{ history.replaceState(null,'',location.pathname); }catch(_){}
+      const bas=Date.now(); const z=setInterval(async()=>{ try{ const q=await (await fetch(SUN+'/cx/katil?q='+j.q,{cache:'no-store'})).json();
+          if(q.r){ clearInterval(z); if(!q.r.ok){ o.hidden=true; b.hidden=false; b.disabled=false; b.textContent='HESABIMI OLUŞTUR'; return sallaF(dv,h,q.r.m||'Olmadı.'); }
+            o.textContent='✓ '+q.r.m+' Giriş yapılıyor…'; for(let i=0;i<12;i++){ KL=await kilitAl(); if(KL&&KL[u]) break; await new Promise(z_=>setTimeout(z_,5000)); }
+            await girisYap(ad,s1,true); } }catch(_){}
+        if(Date.now()-bas>15*60e3){ clearInterval(z); o.textContent='Hesabın henüz açılmadı (sistem kapalı olabilir). Davetin kayıtlı; biraz sonra kullanıcı adın ve şifrenle giriş yap.'; } },10000); }
+    catch(e){ b.disabled=false; b.textContent='HESABIMI OLUŞTUR'; sallaF(dv,h,e.message||'Bir sorun oldu.'); } };
 }).catch(()=>{ $('y').textContent='Yüklenemedi · sayfayı yenile'; });
 })();
 </script></body></html>
