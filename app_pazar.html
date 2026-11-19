@@ -2402,7 +2402,7 @@ const MOBIL=matchMedia('(max-width:1060px), (pointer:coarse)').matches;   /* 16.
 const PTS=[]; const NP=MOBIL?300:520;
 for(let i=0;i<NP;i++){ const y=1-(i/(NP-1))*2, r=Math.sqrt(1-y*y), th=i*2.399963; PTS.push([Math.cos(th)*r, y, Math.sin(th)*r, Math.random()]); }
 const pulses=[]; for(let i=0;i<ENG.length*2;i++) pulses.push({n:i%ENG.length, p:Math.random(), s:.18+Math.random()*.25});
-function size(){ const r=cv.getBoundingClientRect(); DPR=Math.min(MOBIL?2:(frame.agir?1.25:1.5),devicePixelRatio||1);   /* 19.11 · Mac Retina: tuval 1,5x (2x'in ~%56'sı piksel) — görünür fark yok, çizim çok daha hafif */ W=r.width; H=r.height; cv.width=W*DPR; cv.height=H*DPR; cx.setTransform(DPR,0,0,DPR,0,0); }
+function size(){ const r=cv.getBoundingClientRect(); if(!r.width||!r.height) return;   /* 20.11 · gizliyken (başka sekme / gizli çerçeve) 0 ölçüp boş kalmasın */ DPR=Math.min(MOBIL?2:(frame.agir?1.25:1.5),devicePixelRatio||1);   /* 19.11 · Mac Retina: tuval 1,5x (2x'in ~%56'sı piksel) — görünür fark yok, çizim çok daha hafif */ W=r.width; H=r.height; cv.width=W*DPR; cv.height=H*DPR; cx.setTransform(DPR,0,0,DPR,0,0); }
 const _RGB={};   /* 16.11 · renk çözümü önbellekte (her karede yüzlerce çağrı) */
 function rgba(hex,a){ let c=_RGB[hex]; if(!c){ let h=String(hex).replace('#',''); if(h.length===3) h=h.split('').map(x=>x+x).join(''); const n=parseInt(h,16); c=_RGB[hex]=`rgba(${n>>16&255},${n>>8&255},${n&255},`; } return c+(Math.round(a*100)/100)+')'; }
 let colCache={}; let ZM=null;   // v4.5 zaman makinesi: seçili gün (null = bugün)
@@ -2518,6 +2518,7 @@ function frame(now){ if(DUR||!cv.isConnected) return;
 }
 function startReactor(){ size(); cols(); requestAnimationFrame(frame); }
 addEventListener('resize',()=>{ size(); if(RM) frame(performance.now()); drawSparks(); drawBtc(); radar(); });
+if(window.ResizeObserver){ let _w=0,_h=0; new ResizeObserver(()=>{ const r=cv.getBoundingClientRect(); if(!r.width||!r.height||(Math.abs(r.width-_w)<1&&Math.abs(r.height-_h)<1)) return; _w=r.width; _h=r.height; size(); if(RM) frame(performance.now()); try{ drawSparks(); drawBtc(); radar(); }catch(_){} }).observe(cv); }   /* 20.11 · reaktör görünür olunca kendini yeniden ölçer */
 
 
   startReactor(); return {dur(){ DUR=true; }}; }
