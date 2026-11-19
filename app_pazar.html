@@ -525,48 +525,9 @@ html.gomulu #kabuk{padding-top:8px}
 html.gomulu #tabbar{grid-template-columns:repeat(4,1fr)}
 </style>
 <style id="cx-reaktor-css">/* üretildi: index_yeni.html CORTEX reaktörü (pazar_uret) */
-#cxR{
-  --bg:#05070d;--bg2:#0a0f1c;--panel:rgba(14,20,36,.72);--panel2:rgba(20,28,50,.6);--line:rgba(120,150,220,.14);--line2:rgba(120,150,220,.28);
-  --ink:#e8eeff;--ink2:#9aa7c7;--ink3:#5d6a8c;
-  --up:#2cf2a6;--down:#ff4d7a;--warn:#ffc24a;--cyan:#38d8ff;--violet:#9b7bff;--core:#38d8ff;
-  --glow:0 0 24px rgba(56,216,255,.18);
-}
-:root[data-tema="acik"] #cxR{
-  --bg:#eef2fa;--bg2:#e3e9f6;--panel:rgba(255,255,255,.82);--panel2:rgba(240,244,252,.9);--line:rgba(40,60,120,.12);--line2:rgba(40,60,120,.24);
-  --ink:#0d1530;--ink2:#46557a;--ink3:#7a87a8;--up:#00a86b;--down:#e0245e;--warn:#c98700;--cyan:#0090c8;--violet:#6a4ce0;--glow:0 0 0 transparent;
-}
-:root:not([data-tema="acik"]) #cxR{
-  --bg:#05070d;--bg2:#0a0f1c;--panel:rgba(14,20,36,.72);--panel2:rgba(20,28,50,.6);--line:rgba(120,150,220,.14);--line2:rgba(120,150,220,.28);
-  --ink:#e8eeff;--ink2:#9aa7c7;--ink3:#5d6a8c;--up:#2cf2a6;--down:#ff4d7a;--warn:#ffc24a;--cyan:#38d8ff;--violet:#9b7bff;
-}
-#cxR .hero{display:grid;grid-template-columns:1fr minmax(320px,600px) 1fr;gap:18px;align-items:center;margin-top:4px}
-#cxR .reactor{position:relative;width:100%;aspect-ratio:1/1;max-width:600px;margin:0 auto}
-#cxR .reactor canvas{position:absolute;inset:0;width:100%;height:100%}
-#cxR .core-txt{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;width:44%}
-#cxR .core-txt .t1{font:600 10px "JetBrains Mono",monospace;letter-spacing:.22em;color:var(--ink2)}
-#cxR .core-txt .t2{font-size:clamp(17px,3.6vw,26px);font-weight:700;letter-spacing:.04em;margin:4px 0 2px;text-shadow:0 0 18px var(--core)}
-#cxR .core-txt .t3{font:500 11px "JetBrains Mono",monospace;color:var(--ink2)}
-#cxR .node{position:absolute;transform:translate(-50%,-50%);background:var(--panel);border:1px solid var(--line2);border-radius:12px;padding:6px 9px 6px;min-width:74px;text-align:center;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:transform .25s,border-color .25s,box-shadow .25s;user-select:none;-webkit-tap-highlight-color:transparent}
-#cxR .node:hover,#cxR .node.on{transform:translate(-50%,-50%) scale(1.07);border-color:var(--c,var(--cyan));box-shadow:0 0 22px color-mix(in srgb,var(--c,var(--cyan)) 35%,transparent)}
-#cxR .node .n1{font:700 9.5px "JetBrains Mono",monospace;letter-spacing:.14em;color:var(--c,var(--cyan))}
-#cxR .node .n2{font-size:13px;font-weight:600;margin-top:2px;white-space:nowrap}
-#cxR .node i{position:absolute;top:-4px;right:-4px;width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
-@media (max-width:1060px){#cxR .hero{grid-template-columns:1fr 1fr}#cxR .reactor{grid-column:1/-1;order:-1}}
-@media (max-width:560px){#cxR .core-txt .t2{text-shadow:0 0 18px var(--core),0 0 4px var(--bg),0 0 8px var(--bg)}#cxR .hero{grid-template-columns:1fr}#cxR .node{min-width:60px;padding:4px 6px;border-radius:10px}#cxR .node .n1{font-size:8px;letter-spacing:.08em}#cxR .node .n2{font-size:11px}}
-@media (max-width:1060px){#cxR .hero>.kserit{grid-template-columns:minmax(0,1fr);gap:8px}#cxR .hero>.kserit .ks-sag{white-space:normal;text-align:left}}
-#cxR .card,#cxR .stat,#cxR .cxhud,#cxR .kserit,#cxR .kalt,#cxR .anz-b{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-#cxR .cxhud .hero{grid-template-columns:minmax(0,1fr)!important;justify-items:center}
-#cxR .cxhud .reactor{width:100%;max-width:600px}
-#cxR .hc-mk{width:44px;height:44px;flex:none;filter:drop-shadow(0 0 10px rgba(56,168,255,.35))}
-#cxR .hc-wm{font:700 25px "Space Grotesk",system-ui,sans-serif!important;letter-spacing:.2em!important;line-height:1;text-shadow:none}
-@media (max-width:560px){#cxR .hc-mk{width:36px;height:36px}#cxR .hc-wm{font-size:20px!important;letter-spacing:.2em!important}}
-#cxR .cx-wm{color:#2aa8f0!important;display:inline!important;background:none!important}
-#cxR .cxh-marka{display:flex!important;align-items:center;gap:10px}
-@media (max-width:700px){#cxR .cxhud .hero{margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px}}
-#cxR .cxhud .anz-b.var::after{animation-name:cx-anzPm}
-@media (max-width:700px){#cxR .hero{overflow:hidden}#cxR .node{min-width:54px}}
-@media (max-width:560px){#cxR .node .n1{font-size:9px;letter-spacing:.06em}}
-@keyframes cx-anzPm{0%{transform:scale(1);opacity:.75}100%{transform:scale(1.08,1.55);opacity:0}}
+
+
+
 #cxR{margin:0 0 12px}#cxR .cxhud{margin:0}
 </style>
 </head>
